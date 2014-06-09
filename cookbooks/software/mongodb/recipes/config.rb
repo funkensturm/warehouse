@@ -10,6 +10,13 @@ directory data_path.to_s do
   mode '0755'
 end
 
+log 'Ensuring MongoDB log directory...'
+directory log_path.to_s do
+  owner username
+  group username
+  mode '0755'
+end
+
 log 'Ensuring persmissions for the MongoDB log file...'
 file log_path.join('upstart.log').to_s do
   owner username

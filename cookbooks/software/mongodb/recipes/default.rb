@@ -1,3 +1,3 @@
-include_recipe 'redis::install'
-include_recipe 'redis::config'
-include_recipe 'redis::upstart'
+include_recipe 'mongodb::install'
+include_recipe 'mongodb::config'
+include_recipe 'mongodb::upstart'
