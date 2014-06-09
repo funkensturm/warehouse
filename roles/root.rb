@@ -13,6 +13,7 @@ run_list(
   'recipe[bundler]',
   'recipe[rmate]',
   'recipe[brainwash]',
+  'recipe[checklist]',
   'recipe[sshd]',
   'recipe[ufw]'
 )
