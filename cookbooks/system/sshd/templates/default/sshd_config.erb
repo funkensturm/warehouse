@@ -1,0 +1,34 @@
+# Use Protocol 2 only. Default is "2,1".
+Protocol 2
+
+# Use an alternative port to minimize sniffing.
+Port <%= @port %>
+
+# Don't allow authentication via passwords - keys only. Default is yes.
+UsePAM yes
+PasswordAuthentication no
+ChallengeResponseAuthentication no
+
+# Making the sshd logfile more restricted. Default is AUTH.
+SyslogFacility AUTHPRIV
+
+# Default is no.
+X11Forwarding yes
+
+# Accept language localization environment variables.
+AcceptEnv LANG LC_* RMATE_*
+
+# How many simultaneous connections without authentication. Default is 10.
+MaxStartups 8
+
+# When connected, you better authenticate quickly (in x seconds). Default is 120.
+LoginGraceTime 5
+
+# Enable FTP over SSH.
+Subsystem sftp /usr/lib/openssh/sftp-server
+
+# Remove "last login" message.
+PrintLastLog no
+
+# Prevent duplicate motd.
+PrintMotd no

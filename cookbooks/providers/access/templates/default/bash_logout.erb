@@ -1,0 +1,2 @@
+# Resetting Tab title of Mac OS X Terminal to default if this is an SSH session
+[ -n "$SSH_CLIENT" ] && [ -n "$SSH_TTY" ] && printf '\e]0;\a'

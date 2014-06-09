@@ -1,0 +1,24 @@
+{
+  "environment": "production",
+  "whoami": {
+    "identifier": "amazonweb1"
+  },
+  "sshd": {
+    "port": 33071
+  },
+  "access": {
+    "ssh": {
+      "macbook.personal": "ssh-rsa abcdef..."
+    },
+    "github": {
+      "private_ssh_key": "-----BEGIN RSA PRIVATE KEY-----\nabcdef..."
+    }
+  },
+  "mysql": {
+    "password": "test"
+  },
+  "run_list": [
+    "role[webserver]", "recipe[myapp]"
+  ]
+}
+

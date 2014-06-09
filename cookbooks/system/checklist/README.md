@@ -1,0 +1,1 @@
+A custom tool to check for common web server configuration errors.

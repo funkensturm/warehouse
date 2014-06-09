@@ -1,0 +1,12 @@
+Host *
+  ServerAliveInterval 5
+  StrictHostKeyChecking no
+  UserKnownHostsFile /dev/null
+  SendEnv RMATE_*
+  RemoteForward 52698 localhost:52698
+  IdentitiesOnly yes
+  User chef
+
+Host github.com
+  IdentityFile ~/.ssh/github
+  User git

@@ -1,0 +1,104 @@
+<%
+# This is merly a helper which will redirect all output into the appropriate log file
+def redirect_to_log
+  %{ exec >>#{@logfile} 2>&1 }
+end
+
+# # Log something to the logfile
+def log(message)
+  %{ echo "$(date) - #{@name.upcase} UPSTART - #{message}" }
+end
+
+def escape_single_quotes(string)
+  string.to_s.gsub("'", %q{'"'"'})
+end
+%>
+
+<% if @autostart %>
+  start on runlevel <%= @start_on %>
+<% end %>
+stop on runlevel <%= @stop_on %>
+
+<% @envs.each do |var, value| %>
+env <%= var %>='<%= escape_single_quotes value %>'
+<% end %>
+
+<% if @user %>
+setuid <%= @user %>
+setgid <%= @user %>
+<% end %>
+
+<% if @high_nofile_limit %>
+limit nofile 65536 65536
+<% end %>
+
+<% if @memlock_unlimited %>
+limit memlock unlimited unlimited
+<% end %>
+
+<% if @kill_signal != 'SIGTERM' %>
+  kill signal <%= @kill_signal %>
+<% end %>
+
+<% if @kill_timeout.to_i != 5 %>
+  kill timeout <%= @kill_timeout.to_i %>
+<% end %>
+
+<% if @working_dir %>
+  chdir <%= @working_dir %>
+<% end %>
+
+script
+  <%= redirect_to_log %>
+  <% if @load_envs_from_file; path = ::File.join(node[:central][:envs], @user) %>
+    [ -e "<%= path %>" ] && load_envs_from_file . <%= path %>
+  <% end %>
+  <% if @bash_profile %>
+    exec bash -c 'source ~/.bash_profile && <%= escape_single_quotes @command %>'
+  <% else %>
+    <%= @command %>
+  <% end %>
+end script
+
+pre-start script
+  <%= redirect_to_log %>
+  <%= log "Spawning..." %>
+  <% if @pre_start %>
+    <%= log "Running pre-start hooks..." %>
+    <%= @pre_start %>
+    <%= log "Pre-start hooks finished." %>
+  <% end %>
+end script
+
+pre-stop script
+  <%= redirect_to_log %>
+  <%= log "Quitting..." %>
+  <% if @pre_stop %>
+    <%= log "Running pre-stop hooks..." %>
+    <%= @g %>
+    <%= log "Pre-stop hooks finished." %>
+  <% end %>
+end script
+
+post-stop script
+  <%= redirect_to_log %>
+  <% if @post_stop %>
+    <%= log "Running post-stop hooks..." %>
+    <%= @post_stop %>
+    <%= log "Post-stop hooks finished." %>
+  <% end %>
+end script
+
+<% if @nice.to_i > 0 %>
+  nice <%= @nice.to_i %>
+<% end %>
+
+<% if %w{ fork daemon stop }.include?(@expect) %>
+  expect <%= @expect %>
+<% end %>
+
+<% if @respawn %>
+  respawn
+  # Try to respawn max 5 times within 30 seconds.
+  respawn limit 5 30
+<% end %>

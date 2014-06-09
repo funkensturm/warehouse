@@ -1,0 +1,3 @@
+<% @envs.each do |key, value| %>
+export <%= key %>='<%= value.to_s.gsub "'", %q{'"'"'} %>'
+<% end %>

@@ -1,0 +1,5 @@
+.DS_Store
+
+/nodes/*.json
+!/nodes/.gitkeep
+!/nodes/example_node.json

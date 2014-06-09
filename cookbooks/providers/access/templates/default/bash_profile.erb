@@ -1,0 +1,54 @@
+# Prompt for <%= node.chef_environment %> environment
+<%
+  color_code = case node.chef_environment
+  when 'production' then 31  # Red
+  when 'staging'    then 33  # Yellow
+  when 'test'       then 36  # Cyan
+  else                   37  # White
+  end
+
+identifier = node[:whoami][:identifier]
+
+-%>
+export PS1="\[\e[1;<%= color_code %>m\]\u@<%= identifier %>\[\e[0;<%= color_code %>m\] \w\[\e[0m\]$ "
+
+# enable color support of ls and also add handy aliases
+if [ -x /usr/bin/dircolors ]; then
+  test -r ~/.dircolors && eval "$(dircolors -b ~/.dircolors)" || eval "$(dircolors -b)"
+  alias ls='ls --color=auto'
+  alias grep='grep --color=auto'
+  alias fgrep='fgrep --color=auto'
+  alias egrep='egrep --color=auto'
+fi
+
+# Setting the Tab tile in Mac OS X Terminal when SSH'ing into this machine
+[ -n "$SSH_CLIENT" ] && [ -n "$SSH_TTY" ] && printf "\e]0;$(whoami)@<%= identifier %>\a"
+
+# Load user specific ENVs
+<% env_path = ::File.join(node[:central][:envs], @user) %>
+if [[ -s <%= env_path %> ]]; then
+  source <%= env_path %>
+fi
+
+# Give it all we got.
+export PATH=$PATH:/sbin:/usr/sbin:/usr/local/sbin:/usr/kerberos/bin:/usr/local/bin:/bin:/usr/bin:/usr/lib/nagios/plugins
+
+# Shell
+alias reload='(source $HOME/.bash_profile && echo "sourced $HOME/.bash_profile") || echo "Could not source $HOME/.bash_profile"'
+alias la='ls -lah'
+alias ..='cd ..'
+alias screen='byobu'
+alias top='htop' # Yes, we're actually overriding the original top command :)
+alias myip='curl ifconfig.me'
+alias chefme='sudo chef-client'
+alias be='bundle exec'
+alias bigfiles='sudo du -a / 2>/dev/null | sort -n -r | head -n 10'
+alias rst='touch tmp/restart.txt && echo touched tmp/restart.txt'
+
+function aux {
+  GREP_VALUE="$@"
+  if [ -z "$GREP_VALUE" ]; then
+    GREP_VALUE=''
+  fi
+  ps aux f | grep -v "_ \[" | grep -v 'grep --color' | grep "$GREP_VALUE"
+}

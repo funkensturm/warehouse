@@ -1,0 +1,1 @@
+Installs and configures ntp.
