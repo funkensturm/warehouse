@@ -2,7 +2,7 @@ name = 'redis'
 config_path   = node[:redis][:config_path]
 data_path     = ::File.join(node[:central][:data], 'redis')
 log_path      = ::File.join(node[:central][:log], 'redis')
-log_file_path = ::File.join(log_path, 'redis.log')
+logfile_path  = ::File.join(log_path, 'redis.log')
 
 log 'Ensuring Redis config directory...'
 directory config_path do
@@ -45,7 +45,7 @@ template ::File.join(config_path, 'redis.conf') do
   group name
   mode '0644'
   variables({
-    logfile_path: log_file_path,
+    logfile_path: logfile_path,
     data_path:    data_path,
   })
   notifies :restart, 'service[redis]'
