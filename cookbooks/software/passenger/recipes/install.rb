@@ -39,7 +39,7 @@ file '/etc/init.d/nginx' do
 end
 
 log_path      = ::File.join(node[:central][:log], 'nginx')
-log_file_path = ::File.join(log_path, 'upstart.log')
+logfile_path  = ::File.join(log_path, 'upstart.log')
 
 directory log_path do
   owner node[:whoami][:user]
@@ -50,7 +50,7 @@ end
 
 log 'Installing Nginx upstart job...'
 upstart 'nginx' do
-  logfile log_file_path
+  logfile logfile_path
   command %{/usr/sbin/nginx -g "daemon off;"}
 end
 
