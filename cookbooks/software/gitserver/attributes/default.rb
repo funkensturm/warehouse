@@ -1,0 +1,1 @@
+default[:gitserver][:user] = 'git'
