@@ -27,7 +27,7 @@ bundle exec knife solo prepare ubuntu@203.0.113.19 --identity-file ~/.ssh/my_ssh
 ```
 
 This will also create a file in the local [nodes](https://github.com/funkensturm/warehouse/tree/master/nodes)
-directory. Modify it according to the example json file provided there.
+directory. Modify it according to the [example](https://github.com/funkensturm/warehouse/blob/master/nodes/example_node.json) json file provided there.
 
 Run chef on the server for the first time:
 
