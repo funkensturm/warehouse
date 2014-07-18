@@ -54,6 +54,7 @@ bundle exec knife solo cook chef@203.0.113.19 --ssh-port 33071 --identity-file ~
 - checklist
 - brainwash
 - aux `nginx`
+
 ### Copyright
 
 MIT 2014 funkensturm. See [MIT-LICENSE](http://github.com/funkensturm/warehouse/blob/master/MIT-LICENSE).
