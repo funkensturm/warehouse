@@ -1,5 +1,5 @@
 # Loading before server block
-<% ('a' .. 'z').each do |letter| %>
+<% (0...36).map{ |i| i.to_s 36 }.each do |letter| %>
 include <%= "#{@site_path}/before/#{letter}*.conf" %>;
 <% end %>
 
@@ -15,7 +15,7 @@ config = %{
 }
 
 # Loading inside server block
-('a'..'z').each do |letter|
+(0...36).map{ |i| i.to_s 36 }.each do |letter|
 config += %{ include "#{@site_path}/inside/#{letter}*.conf"; \n}
 end
 %>
