@@ -2,7 +2,6 @@ name          = 'mongodb'
 config_path   = Pathname.new '/etc'
 data_path     = Pathname.new node[:central][:data] + '/mongodb'
 log_path      = Pathname.new node[:central][:log] + '/mongodb'
-logfile_path  = ::File.join(log_path, 'mongodb.log')
 
 log 'Ensuring MongoDB database directory...'
 directory data_path.to_s do
@@ -34,8 +33,8 @@ template config_path.join('mongodb.conf').to_s do
   group name
   mode '0644'
   variables({
-    data_path:    data_path,
-    logfile_path: logfile_path,
+    data_path:  data_path,
+    log_path:   log_path,
   })
   notifies :restart, 'service[mongodb]'
 end
