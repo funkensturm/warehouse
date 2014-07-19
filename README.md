@@ -22,7 +22,8 @@ You can do that with the prepare command:
 bundle exec knife solo prepare USERNAME@ENDPOINT [KNIFE OPTIONS]
 
 # Examples
-bundle exec knife solo prepare ubuntu@203.0.113.19
+bundle exec knife solo prepare root@203.0.113.19
+bundle exec knife solo prepare ubuntu@203.0.113.19  # <- EC2 commonly uses this username
 bundle exec knife solo prepare ubuntu@203.0.113.19 --identity-file ~/.ssh/my_ssh_key
 ```
 
