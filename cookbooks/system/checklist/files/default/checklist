@@ -56,6 +56,7 @@ module Checklist
     zombie_hunt process: 'nginx',        job: 'nginx', fix: 'Kill the zombie with: sudo /usr/sbin/nginx -s quit'
     zombie_hunt process: 'mysql',        job: 'mysql'
     zombie_hunt process: 'redis-server', job: 'redis', fix: 'Kill the zombie with: redis-cli shutdown'
+    zombie_hunt process: 'memcached',    job: 'redis', fix: 'Kill the zombie with: /etc/init.d/memcached stop'
     log
   end
 
