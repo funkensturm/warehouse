@@ -57,6 +57,7 @@ module Checklist
     zombie_hunt process: 'mysql',        job: 'mysql'
     zombie_hunt process: 'redis-server', job: 'redis', fix: 'Kill the zombie with: redis-cli shutdown'
     zombie_hunt process: 'memcached',    job: 'memcached', fix: 'Kill the zombie with: /etc/init.d/memcached stop'
+    zombie_hunt process: 'mongod',       job: 'mongodb', fix: 'Kill the zombie with: /etc/init.d/mongodb stop'
     log
   end
 
