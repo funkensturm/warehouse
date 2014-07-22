@@ -53,11 +53,12 @@ module Checklist
 
   def self.perform
     log
-    zombie_hunt process: 'nginx',        job: 'nginx', fix: 'Kill the zombie with: sudo /usr/sbin/nginx -s quit'
+    zombie_hunt process: 'nginx',        job: 'nginx',     fix: 'Kill the zombie with: sudo /usr/sbin/nginx -s quit'
     zombie_hunt process: 'mysql',        job: 'mysql'
-    zombie_hunt process: 'redis-server', job: 'redis', fix: 'Kill the zombie with: redis-cli shutdown'
+    zombie_hunt process: 'redis-server', job: 'redis',     fix: 'Kill the zombie with: redis-cli shutdown'
     zombie_hunt process: 'memcached',    job: 'memcached', fix: 'Kill the zombie with: /etc/init.d/memcached stop'
-    zombie_hunt process: 'mongod',       job: 'mongodb', fix: 'Kill the zombie with: /etc/init.d/mongodb stop'
+    zombie_hunt process: 'mongod',       job: 'mongodb',   fix: 'Kill the zombie with: /etc/init.d/mongodb stop'
+    zombie_hunt process: 'murmurd',      job: 'murmur',    fix: 'Kill the zombie with: /etc/init.d/mumble-server stop'
     log
   end
 

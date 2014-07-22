@@ -1,0 +1,1 @@
+parcel 'mumble-server'

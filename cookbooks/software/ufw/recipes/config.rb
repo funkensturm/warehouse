@@ -6,18 +6,24 @@ ufw = ['default deny']
 
 # Allow for SSH for everyone on custom and default port (to not shut us out)
 sshd_port = node[:sshd][:port]
-ufw << "allow 22/tcp"
+ufw << 'allow 22/tcp'
 ufw << "allow #{sshd_port}/tcp"
 
 # Allow web traffic
 if node.run_list.roles.include?('webserver')
-  ufw << "allow 80/tcp"    # HTTP
-  ufw << "allow 443/tcp"   # HTTPS
+  ufw << 'allow 80/tcp'    # HTTP
+  ufw << 'allow 443/tcp'   # HTTPS
+end
+
+# Allow Mumbler traffic
+if node.run_list.roles.include?('murmurserver')
+  ufw << 'allow 64738/udp'
+  ufw << 'allow 64738/tcp'
 end
 
 log %{Resetting firewall...}
 bash "reset-firewall" do
-  code "ufw --force reset"
+  code 'ufw --force reset'
 end
 
 log %{Setting firewall permissions...}
@@ -27,5 +33,5 @@ end
 
 log %{Enabling firewall...}
 bash "enable-firewall" do
-  code "ufw --force enable"
+  code 'ufw --force enable'
 end
