@@ -13,3 +13,10 @@ log 'Removing ruby1.9 symlinks and linking ruby2.0 bins'
     action :create
   end
 end
+
+log 'Linking config.h'
+
+link '/usr/include/ruby-2.0.0/ruby/config.h' do
+  to '/usr/include/x86_64-linux-gnu/ruby-2.0.0/ruby/config.h'
+  action :create
+end
