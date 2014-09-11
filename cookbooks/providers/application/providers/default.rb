@@ -22,7 +22,8 @@ action :install do
       envs: new_resource.environment_variables,
     })
     not_if { new_resource.environment_variables.empty? }
-    notifies :restart, 'service[nginx]'
+    notifies :stop, 'service[nginx]'
+    notifies :start, 'service[nginx]'
   end
 
   site_path = node[:passenger][:config_path].join(new_resource.name).to_s
@@ -57,7 +58,8 @@ action :install do
       log_path:    log_path,
     })
     only_if { new_resource.passenger }
-    notifies :restart, 'service[nginx]'
+    notifies :stop, 'service[nginx]'
+    notifies :start, 'service[nginx]'
   end
 
   dirs = [new_resource.name, "#{new_resource.name}/before", "#{new_resource.name}/inside"]
@@ -75,7 +77,8 @@ action :install do
       cookbook 'application'
       source 'nginx/assets.conf.erb'
       variables( public_path: public_path )
-      notifies :restart, 'service[nginx]'
+      notifies :stop, 'service[nginx]'
+      notifies :start, 'service[nginx]'
     end
   end
 
