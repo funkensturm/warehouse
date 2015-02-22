@@ -1,6 +1,6 @@
 username    = node[:postgres][:user]
 config_path = node[:postgres][:config_path]
-log_path      = Pathname.new node[:central][:log] + '/postgres'
+log_path    = Pathname.new(node[:central][:log]).join 'postgres'
 
 log 'Ensuring PostgreSQL config directory...'
 directory config_path.to_s do

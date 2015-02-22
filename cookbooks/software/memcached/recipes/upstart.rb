@@ -1,6 +1,6 @@
 name             = node[:memcached][:user]
 config           = "-m #{node[:memcached][:memory]} -p #{node[:memcached][:port]} -u #{node[:memcached][:user]} -l #{node[:memcached][:listen]}"
-log_path         = Pathname.new node[:central][:log] + '/memcached'
+log_path         = Pathname.new(node[:central][:log]).join 'memcached'
 logfile          = ::File.join log_path, 'upstart.log'
 
 

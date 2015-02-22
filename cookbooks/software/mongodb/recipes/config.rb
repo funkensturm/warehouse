@@ -1,7 +1,7 @@
 name          = 'mongodb'
 config_path   = Pathname.new '/etc'
-data_path     = Pathname.new node[:central][:data] + '/mongodb'
-log_path      = Pathname.new node[:central][:log] + '/mongodb'
+data_path     = Pathname.new(node[:central][:log]).join 'mongodb'
+log_path      = Pathname.new(node[:central][:log]).join 'mongodb'
 logfile       = ::File.join(log_path, 'mongodb.log')
 
 log 'Ensuring MongoDB database directory...'

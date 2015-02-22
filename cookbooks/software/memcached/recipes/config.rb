@@ -1,6 +1,6 @@
 name          = node[:memcached][:user]
 config_path   = Pathname.new '/etc'
-log_path      = Pathname.new node[:central][:log] + '/memcached'
+log_path      = Pathname.new(node[:central][:log]).join 'memcached'
 logfile       = ::File.join(log_path, 'memcached.log')
 
 log 'Ensuring Memcached log directory...'
