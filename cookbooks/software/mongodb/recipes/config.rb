@@ -1,6 +1,6 @@
 name          = 'mongodb'
 config_path   = Pathname.new '/etc'
-data_path     = Pathname.new(node[:central][:log]).join 'mongodb'
+data_path     = Pathname.new(node[:central][:data]).join 'mongodb'
 log_path      = Pathname.new(node[:central][:log]).join 'mongodb'
 logfile       = ::File.join(log_path, 'mongodb.log')
 
