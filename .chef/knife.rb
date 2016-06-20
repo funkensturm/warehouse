@@ -17,4 +17,3 @@ role_path        'roles'
 environment_path 'environments'
 data_bag_path    '/dev/null'
 ssl_verify_mode  :verify_peer
-

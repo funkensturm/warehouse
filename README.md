@@ -50,6 +50,7 @@ Note that SSH on the server will not listen on port 22 anymore, but on port 3307
 # Examples
 bundle exec knife solo cook chef@203.0.113.19 --ssh-port 33071
 bundle exec knife solo cook chef@203.0.113.19 --ssh-port 33071 --identity-file ~/.ssh/my_ssh_key
+bundle exec knife solo cook chef@203.0.113.19 /custom/path/to/nodes/someserver.json
 ```
 ### Tools
 - checklist
