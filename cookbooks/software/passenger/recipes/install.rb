@@ -48,6 +48,17 @@ directory log_path do
   recursive true
 end
 
+log %{Enable logrotation...}
+template "/etc/logrotate.d/custom-nginx" do
+  owner "root"
+  group "root"
+  source "logrotate.erb"
+  variables({
+    log_path: "#{log_path}/*.log"
+  })
+  mode "644"
+end
+
 log 'Installing Nginx upstart job...'
 upstart 'nginx' do
   logfile logfile_path

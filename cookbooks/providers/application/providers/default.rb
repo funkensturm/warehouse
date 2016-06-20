@@ -43,6 +43,18 @@ action :install do
     end
   end
 
+  log %{Enable logrotation...}
+  template "/etc/logrotate.d/nginx-#{new_resource.name}" do
+    cookbook 'passenger'
+    owner "root"
+    group "root"
+    source "logrotate.erb"
+    variables({
+      log_path: "#{log_path}/*.log"
+    })
+    mode "644"
+  end
+
   log %{Configuring Nginx for #{new_resource.name}...}
 
   template config_path do
