@@ -1,5 +1,10 @@
-execute "add-apt-repository ppa:brightbox/ruby-ng" do
-  user "root"
+apt_repository 'ruby' do
+  uri          'http://ppa.launchpad.net/brightbox/ruby-ng/ubuntu'
+  distribution node['lsb']['codename']
+  components   ['main']
+  keyserver    'keyserver.ubuntu.com'
+  key          'C3173AA6'
+  deb_src      true
 end
 
 execute "apt-get update" do
@@ -17,7 +22,7 @@ log 'Removing ruby1.9 symlinks and linking ruby2.2 bins'
   end
 
   link "/usr/bin/#{file}" do
-    to "/usr/bin/#{file}2.2"
+    to "/etc/alternatives/#{file}"
     action :create
   end
 end
