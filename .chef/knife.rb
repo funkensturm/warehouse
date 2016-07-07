@@ -1,6 +1,6 @@
 chef_repo_path        = Pathname.new File.expand_path('..', File.dirname(__FILE__))
 cookbooks_containers  = chef_repo_path.join 'cookbooks/*'
-custom_cookbooks_path = chef_repo_path.join '../warehouse_apps'
+custom_cookbooks_path = chef_repo_path.join '../apps'
 all_cookbook_paths    = Dir.glob(cookbooks_containers.to_s).select { |entry| File.directory?(entry) }
 
 if custom_cookbooks_path.directory?
