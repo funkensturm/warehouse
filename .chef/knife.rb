@@ -1,15 +1,21 @@
 chef_repo_path        = Pathname.new File.expand_path('..', File.dirname(__FILE__))
 cookbooks_containers  = chef_repo_path.join 'cookbooks/*'
-custom_cookbooks_path = chef_repo_path.join '../apps'
 all_cookbook_paths    = Dir.glob(cookbooks_containers.to_s).select { |entry| File.directory?(entry) }
 
-if custom_cookbooks_path.directory?
-  all_cookbook_paths << custom_cookbooks_path
-else
-  puts
-  puts "  No custom cookbooks found at #{custom_cookbooks_path}"
-  puts
+custom_cookbooks_paths = []
+custom_cookbooks_paths << chef_repo_path.join('../apps')
+custom_cookbooks_paths << Pathname.new(File.dirname(ARGV.last)).join('cookbooks')
+
+puts
+custom_cookbooks_paths.compact.each do |path|
+  if path.directory?
+    puts "  Using custom cookbooks located at #{path}"
+    all_cookbook_paths << path
+  else
+    puts "  No custom cookbooks found at #{path}"
+  end
 end
+puts
 
 cookbook_path    all_cookbook_paths.map(&:to_s)
 node_path        'nodes'
