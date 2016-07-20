@@ -12,7 +12,7 @@ template '/etc/ssh/sshd_config' do
 end
 
 service 'ssh' do
-  provider Chef::Provider::Service::Upstart
-  action [ :enable ]
-  supports status: true, start: true, stop: true, restart: true
+  action :enable
+  supports status: true, start: true, stop: true, restart: true, reload: true
 end
+
