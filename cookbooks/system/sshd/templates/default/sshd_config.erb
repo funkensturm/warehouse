@@ -4,10 +4,11 @@ Protocol 2
 # Use an alternative port to minimize sniffing.
 Port <%= @port %>
 
-# Don't allow authentication via passwords - keys only. Default is yes.
+# Don't allow authentication via passwords - public keys only. Default is yes.
 UsePAM yes
 PasswordAuthentication no
 ChallengeResponseAuthentication no
+PermitRootLogin without-password
 
 # Making the sshd logfile more restricted. Default is AUTH.
 SyslogFacility AUTHPRIV
