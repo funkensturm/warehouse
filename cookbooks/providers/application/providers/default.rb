@@ -1,5 +1,26 @@
 action :install do
 
+  if new_resource.letsencrypt
+    log %{Install certbot-auto...}
+    execute 'wget certbot-auto' do
+      user 'root'
+      command 'wget https://dl.eff.org/certbot-auto -O /root/certbot-auto && chmod a+x /root/certbot-auto && mv /root/certbot-auto /usr/local/bin/certbot-auto'
+    end
+
+    log %{Update certbot-auto...}
+    execute 'update certbot-auto' do
+      user 'root'
+      command 'certbot-auto -n config_changes'
+    end
+
+    log %{Install certbot-auto cron...}
+    cron 'certbot-auto renew' do
+      minute  0
+      hour    5
+      command 'certbot-auto renew --quiet --no-self-upgrade'
+    end
+  end
+
   home_path = ::File.join node[:central][:apps], new_resource.name
 
   log %{Creating user for application <b>#{new_resource.name}</b>...}
@@ -55,6 +76,17 @@ action :install do
     mode "644"
   end
 
+  if new_resource.letsencrypt
+    log %{Obtain let's encrypt certificate...}
+
+    domainlist = '-d ' + new_resource.domains.split(' ').join(' -d ')
+
+    execute 'obtain cert' do
+      user 'root'
+      command "certbot-auto certonly -n --webroot -w #{public_path} #{domainlist} --email #{new_resource.letsencrypt_email} --agree-tos"
+    end
+  end
+
   log %{Configuring Nginx for #{new_resource.name}...}
 
   template config_path do
@@ -67,6 +99,7 @@ action :install do
       public_path: public_path,
       server_name: new_resource.domains,
       ssl:         new_resource.ssl,
+      letsencrypt: new_resource.letsencrypt,
       log_path:    log_path,
     })
     only_if { new_resource.passenger }
