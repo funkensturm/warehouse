@@ -37,9 +37,19 @@ server {
 
     <%= config %>
 
-    ssl                       on;
-    ssl_certificate           /etc/ssl/certs/<%= @name %>.crt;
-    ssl_certificate_key       /etc/ssl/private/<%= @name %>.key;
+    ssl on;
+    <% if @letsencrypt %>
+      <%
+      letsencrypt_path = "/etc/letsencrypt/live/#{@server_name}"
+      %>
+
+      ssl_certificate           <%= letsencrypt_path %>/fullchain.pem;
+      ssl_certificate_key       <%= letsencrypt_path %>/privkey.pem;
+      ssl_trusted_certificate   <%= letsencrypt_path %>/fullchain.pem;
+    <% else %>
+      ssl_certificate           /etc/ssl/certs/<%= @name %>.crt;
+      ssl_certificate_key       /etc/ssl/private/<%= @name %>.key;
+    <% end %>
 
     ssl_session_timeout       5m;
     ssl_protocols             TLSv1 TLSv1.1 TLSv1.2;
