@@ -1,16 +1,35 @@
 action :install do
 
   if new_resource.letsencrypt
+
     log %{Install certbot-auto...}
-    execute 'wget certbot-auto' do
+
+    # This causes a `EOFError: end of file reached` for some weird reason.
+    # remote_file '/usr/local/bin/certbot-auto' do
+    #   source 'https://dl.eff.org/certbot-auto'
+    #   owner 'root'
+    #   group 'root'
+    #   mode '0755'
+    # end
+
+    # Use this instead for now:
+    execute 'download certbot-auto' do
       user 'root'
-      command 'wget https://dl.eff.org/certbot-auto -O /root/certbot-auto && chmod a+x /root/certbot-auto && mv /root/certbot-auto /usr/local/bin/certbot-auto'
+      command 'wget https://dl.eff.org/certbot-auto -O /usr/local/bin/certbot-auto'
+    end
+
+    # In combination with this:
+    file '/usr/local/bin/certbot-auto' do
+      action :touch
+      owner 'root'
+      group 'root'
+      mode '0755'
     end
 
     log %{Update certbot-auto...}
     execute 'update certbot-auto' do
       user 'root'
-      command 'certbot-auto -n config_changes'
+      command 'certbot-auto --non-interactive config_changes'
     end
 
     log %{Install certbot-auto cron...}
@@ -79,15 +98,17 @@ action :install do
   if new_resource.letsencrypt
     log %{Obtain let's encrypt certificate...}
 
-    domainlist = '-d ' + new_resource.domains.split(' ').join(' -d ')
+    comma_separated_domains = new_resource.domains.split(' ').join(',')
 
     execute 'obtain cert' do
       user 'root'
-      command "certbot-auto certonly -n --webroot -w #{public_path} #{domainlist} --email #{new_resource.letsencrypt_email} --agree-tos"
+      command "certbot-auto certonly --non-interactive --webroot -w #{public_path} --domains #{comma_separated_domains} --email #{new_resource.letsencrypt_email} --agree-tos"
     end
   end
 
   log %{Configuring Nginx for #{new_resource.name}...}
+
+  letsencrypt_path = Pathname.new("/etc/letsencrypt/live/#{Array(new_resource.domains).first}")
 
   template config_path do
     cookbook 'application'
@@ -100,6 +121,7 @@ action :install do
       server_name: new_resource.domains,
       ssl:         new_resource.ssl,
       letsencrypt: new_resource.letsencrypt,
+      letsencrypt_path: letsencrypt_path,
       log_path:    log_path,
     })
     only_if { new_resource.passenger }

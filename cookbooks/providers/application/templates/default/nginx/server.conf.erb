@@ -38,14 +38,12 @@ server {
     <%= config %>
 
     ssl on;
-    <% if @letsencrypt %>
-      <%
-      letsencrypt_path = "/etc/letsencrypt/live/#{@server_name}"
-      %>
+    <%
 
-      ssl_certificate           <%= letsencrypt_path %>/fullchain.pem;
-      ssl_certificate_key       <%= letsencrypt_path %>/privkey.pem;
-      ssl_trusted_certificate   <%= letsencrypt_path %>/fullchain.pem;
+    if @letsencrypt && @letsencrypt_path.join('privkey.pem').exist? %>
+      ssl_certificate           <%= @letsencrypt_path.join('fullchain.pem') %>;
+      ssl_certificate_key       <%= @letsencrypt_path.join('privkey.pem') %>;
+      ssl_trusted_certificate   <%= @letsencrypt_path.join('fullchain.pem') %>;
     <% else %>
       ssl_certificate           /etc/ssl/certs/<%= @name %>.crt;
       ssl_certificate_key       /etc/ssl/private/<%= @name %>.key;
