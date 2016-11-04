@@ -95,10 +95,10 @@ action :install do
     mode "644"
   end
 
-  if new_resource.letsencrypt
+  if new_resource.letsencrypt && Pathname.new(public_path).exist?
     log %{Obtain let's encrypt certificate...}
 
-    comma_separated_domains = new_resource.domains.split(' ').join(',')
+    comma_separated_domains = new_resource.domain.split(' ').join(',')
 
     execute 'obtain cert' do
       user 'root'
@@ -108,21 +108,18 @@ action :install do
 
   log %{Configuring Nginx for #{new_resource.name}...}
 
-  letsencrypt_path = Pathname.new("/etc/letsencrypt/live/#{Array(new_resource.domains).first}")
-
   template config_path do
     cookbook 'application'
     source 'nginx/server.conf.erb'
     mode '0644'
     variables({
-      name:        new_resource.name,
-      site_path:   site_path,
-      public_path: public_path,
-      server_name: new_resource.domains,
-      ssl:         new_resource.ssl,
-      letsencrypt: new_resource.letsencrypt,
-      letsencrypt_path: letsencrypt_path,
-      log_path:    log_path,
+      name:             new_resource.name,
+      site_path:        site_path,
+      public_path:      public_path,
+      server_name:      new_resource.domains,
+      ssl:              new_resource.ssl,
+      letsencrypt:      new_resource.letsencrypt,
+      log_path:         log_path,
     })
     only_if { new_resource.passenger }
     notifies :stop, 'service[nginx]'

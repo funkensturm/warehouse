@@ -24,7 +24,7 @@ bundle exec knife solo prepare USERNAME@ENDPOINT [KNIFE OPTIONS]
 # Examples
 bundle exec knife solo prepare root@203.0.113.19
 bundle exec knife solo prepare ubuntu@203.0.113.19  # <- EC2 commonly uses this username
-bundle exec knife solo prepare ubuntu@203.0.113.19 --identity-file ~/.ssh/my_ssh_key
+bundle exec knife solo prepare ubuntu@203.0.113.19 --ssh-identity-file ~/.ssh/my_ssh_key
 ```
 
 This will also create a file in the local [nodes](https://github.com/funkensturm/warehouse/tree/master/nodes)
@@ -38,7 +38,7 @@ bundle exec knife solo cook USER@ENDPOINT [KNIFE OPTIONS]
 
 # Examples
 bundle exec knife solo cook ubuntu@203.0.113.19
-bundle exec knife solo cook ubuntu@203.0.113.19 --identity-file ~/.ssh/my_ssh_key --ssh-port 12345
+bundle exec knife solo cook ubuntu@203.0.113.19 --ssh-identity-file ~/.ssh/my_ssh_key --ssh-port 12345
 ```
 
 For initial bootstraping you will use the ubuntu user.
@@ -49,7 +49,7 @@ Note that SSH on the server will not listen on port 22 anymore, but on port 3307
 ```bash
 # Examples
 bundle exec knife solo cook chef@203.0.113.19 --ssh-port 33071
-bundle exec knife solo cook chef@203.0.113.19 --ssh-port 33071 --identity-file ~/.ssh/my_ssh_key
+bundle exec knife solo cook chef@203.0.113.19 --ssh-port 33071 --ssh-identity-file ~/.ssh/my_ssh_key
 bundle exec knife solo cook chef@203.0.113.19 /custom/path/to/nodes/someserver.json
 ```
 ### Tools
