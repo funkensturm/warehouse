@@ -4,67 +4,62 @@ include <%= "#{@site_path}/before/#{letter}*.conf" %>;
 <% end %>
 
 <%
-
-config = %{
-  server_name  #{@server_name};
-  root         #{@public_path};
-
-  passenger_enabled on;
-
-  access_log #{::File.join @log_path, 'nginx_access.log'};
-  error_log  #{::File.join @log_path, 'nginx_error.log'};
-}
-
-# Loading inside server block
-(0...36).map{ |i| i.to_s 36 }.each do |letter|
-config += %{ include "#{@site_path}/inside/#{letter}*.conf"; \n}
-end
-
-%>
-
-server {
-  listen 80;
-
-  <%= config %>
-
-  <% if @ssl %>
-    rewrite ^ https://$server_name$request_uri? permanent;
-  <% end %>
-}
-
-<%
-if @ssl
+Array(@server_name.split(' ')).each do |domain|
+  config = %{
+    server_name  #{domain};
+    root         #{@public_path};
+    passenger_enabled on;
+    access_log #{::File.join @log_path, 'nginx_access.log'};
+    error_log  #{::File.join @log_path, 'nginx_error.log'};
+  }
+  # Loading inside server block
+  (0...36).map{ |i| i.to_s 36 }.each do |letter|
+  config += %{ include "#{@site_path}/inside/#{letter}*.conf"; \n}
+  end
   %>
   server {
-    listen 443;
+    listen 80;
 
     <%= config %>
 
-    ssl on;
-    <%
-    if @letsencrypt
-      cert_name = @server_name.split(' ').first
-      letsencrypt_path = Pathname.new("/etc/letsencrypt/live/#{cert_name}")
-    end
-
-    if @letsencrypt && letsencrypt_path.join('privkey.pem').exist? %>
-      ssl_certificate           <%= letsencrypt_path.join('fullchain.pem') %>;
-      ssl_certificate_key       <%= letsencrypt_path.join('privkey.pem') %>;
-      ssl_trusted_certificate   <%= letsencrypt_path.join('fullchain.pem') %>;
-    <% else %>
-      ssl_certificate           /etc/ssl/certs/<%= @name %>.crt;
-      ssl_certificate_key       /etc/ssl/private/<%= @name %>.key;
+    <% if @ssl %>
+      rewrite ^ https://$server_name$request_uri? permanent;
     <% end %>
-
-    ssl_session_timeout       5m;
-    ssl_protocols             TLSv1 TLSv1.1 TLSv1.2;
-    ssl_ciphers               "EECDH+AESGCM EDH+AESGCM EECDH -RC4 EDH -CAMELLIA -SEED !aNULL !eNULL !LOW !3DES !MD5 !EXP !PSK !SRP !DSS !RC4";
-    ssl_prefer_server_ciphers on;
-
-    if ($scheme = http) {
-      return 301 https://$server_name$request_uri;
-    }
   }
   <%
+  if @ssl
+    %>
+    server {
+      listen 443;
+
+      <%= config %>
+
+      ssl on;
+      <%
+      if @letsencrypt
+        cert_name = @server_name.split(' ').first
+        letsencrypt_path = Pathname.new("/etc/letsencrypt/live/#{cert_name}")
+      end
+
+      if @letsencrypt && letsencrypt_path.join('privkey.pem').exist? %>
+        ssl_certificate           <%= letsencrypt_path.join('fullchain.pem') %>;
+        ssl_certificate_key       <%= letsencrypt_path.join('privkey.pem') %>;
+        ssl_trusted_certificate   <%= letsencrypt_path.join('fullchain.pem') %>;
+      <% else %>
+        ssl_certificate           /etc/ssl/certs/<%= @name %>.crt;
+        ssl_certificate_key       /etc/ssl/private/<%= @name %>.key;
+      <% end %>
+
+      ssl_session_timeout       5m;
+      ssl_protocols             TLSv1 TLSv1.1 TLSv1.2;
+      ssl_ciphers               "EECDH+AESGCM EDH+AESGCM EECDH -RC4 EDH -CAMELLIA -SEED !aNULL !eNULL !LOW !3DES !MD5 !EXP !PSK !SRP !DSS !RC4";
+      ssl_prefer_server_ciphers on;
+
+      if ($scheme = http) {
+        return 301 https://$server_name$request_uri;
+      }
+    }
+    <%
+  end
 end
 %>
