@@ -98,11 +98,15 @@ action :install do
   if new_resource.letsencrypt && Pathname.new(public_path).exist?
     log %{Obtain let's encrypt certificate...}
 
-    letsencrypt_domains = new_resource.domains.split(' ').join(' -d ')
+    # We optain a certificate for every domain and use www and non www
+    domains = new_resource.domains.split(' ')
+    domains.each do |domain|
+      letsencrypt_domains = "#{domain} -d #{domain.gsub('www.', '')}"
 
-    execute 'obtain cert' do
-      user 'root'
-      command "certbot-auto certonly --non-interactive --renew-by-default --webroot -w #{public_path} -d #{letsencrypt_domains} --email #{new_resource.letsencrypt_email} --agree-tos"
+      execute "obtain cert for #{domain}" do
+        user 'root'
+        command "certbot-auto certonly --non-interactive --webroot -w #{public_path} -d #{letsencrypt_domains} --email #{new_resource.letsencrypt_email} --agree-tos"
+      end
     end
   end
 

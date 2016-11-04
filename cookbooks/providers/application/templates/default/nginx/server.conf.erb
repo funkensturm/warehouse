@@ -29,6 +29,7 @@ Array(@server_name.split(' ')).each do |domain|
   <%
   if @ssl
     %>
+
     server {
       listen 443;
 
@@ -37,8 +38,7 @@ Array(@server_name.split(' ')).each do |domain|
       ssl on;
       <%
       if @letsencrypt
-        cert_name = @server_name.split(' ').first
-        letsencrypt_path = Pathname.new("/etc/letsencrypt/live/#{cert_name}")
+        letsencrypt_path = Pathname.new("/etc/letsencrypt/live/#{domain}")
       end
 
       if @letsencrypt && letsencrypt_path.join('privkey.pem').exist? %>
@@ -59,6 +59,7 @@ Array(@server_name.split(' ')).each do |domain|
         return 301 https://$server_name$request_uri;
       }
     }
+
     <%
   end
 end
