@@ -36,7 +36,7 @@ action :install do
     cron 'certbot-auto renew' do
       minute  0
       hour    5
-      command 'certbot-auto renew --quiet --no-self-upgrade'
+      command 'certbot-auto renew --quiet --non-interactive --no-self-upgrade'
     end
   end
 
@@ -98,11 +98,11 @@ action :install do
   if new_resource.letsencrypt && Pathname.new(public_path).exist?
     log %{Obtain let's encrypt certificate...}
 
-    comma_separated_domains = new_resource.domain.split(' ').join(',')
+    letsencrypt_domains = new_resource.domains.split(' ').join(' -d ')
 
     execute 'obtain cert' do
       user 'root'
-      command "certbot-auto certonly --non-interactive --webroot -w #{public_path} --domains #{comma_separated_domains} --email #{new_resource.letsencrypt_email} --agree-tos"
+      command "certbot-auto certonly --non-interactive --renew-by-default --webroot -w #{public_path} -d #{letsencrypt_domains} --email #{new_resource.letsencrypt_email} --agree-tos"
     end
   end
 
