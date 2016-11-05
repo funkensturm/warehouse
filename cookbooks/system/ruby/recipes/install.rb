@@ -11,10 +11,12 @@ execute "apt-get update" do
   user "root"
 end
 
-parcel 'ruby2.2'
-parcel 'ruby2.2-dev'
+parcel 'ruby2.3'
+parcel 'ruby2.3-dev'
+# sudo update-alternatives --config ruby
+# sudo update-alternatives --config gem
 
-log 'Removing ruby1.9 symlinks and linking ruby2.2 bins'
+log 'Removing ruby1.9 symlinks and linking ruby2.3 bins'
 
 %w{ ruby gem irb rdoc erb }.each do |file|
   link "/usr/bin/#{file}" do
@@ -29,7 +31,7 @@ end
 
 log 'Linking config.h'
 
-link '/usr/include/ruby-2.2.0/ruby/config.h' do
-  to '/usr/include/x86_64-linux-gnu/ruby-2.2.0/ruby/config.h'
+link '/usr/include/ruby-2.3.0/ruby/config.h' do
+  to '/usr/include/x86_64-linux-gnu/ruby-2.3.0/ruby/config.h'
   action :create
 end
