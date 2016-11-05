@@ -20,10 +20,10 @@ X11Forwarding yes
 AcceptEnv LANG LC_* RMATE_*
 
 # How many simultaneous connections without authentication. Default is 10.
-MaxStartups 8
+MaxStartups 10
 
 # When connected, you better authenticate quickly (in x seconds). Default is 120.
-LoginGraceTime 5
+LoginGraceTime 15
 
 # Enable FTP over SSH.
 Subsystem sftp /usr/lib/openssh/sftp-server
