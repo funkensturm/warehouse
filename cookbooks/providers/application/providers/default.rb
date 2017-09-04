@@ -36,7 +36,7 @@ action :install do
     cron 'certbot-auto renew' do
       minute  0
       hour    5
-      command 'certbot-auto renew --quiet --non-interactive --no-self-upgrade'
+      command 'certbot-auto renew --quiet --non-interactive --no-self-upgrade --deploy-hook "service nginx restart"'
     end
   end
 
