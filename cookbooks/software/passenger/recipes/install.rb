@@ -59,16 +59,18 @@ template "/etc/logrotate.d/custom-nginx" do
   mode "644"
 end
 
-log 'Installing Nginx upstart job...'
-upstart 'nginx' do
-  logfile logfile_path
-  command %{/usr/sbin/nginx -g "daemon off;"}
+if node['platform'] == 'ubuntu' && node['platform_version'].to_f < 15.04
+  log 'Installing Nginx upstart job...'
+  upstart 'nginx' do
+    logfile logfile_path
+    command %{/usr/sbin/nginx -g "daemon off;"}
+  end
 end
 
-# TODO: Kill init.d job first that came with apt-get
-
-log 'Ensuring Nginx upstart job is running...'
+log 'Ensuring Nginx job is running...'
 service 'nginx' do
-  provider Chef::Provider::Service::Upstart
+  if node['platform'] == 'ubuntu' && node['platform_version'].to_f < 15.04
+    provider Chef::Provider::Service::Upstart
+  end
   action [:enable, :start]
 end
