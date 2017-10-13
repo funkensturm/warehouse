@@ -12,7 +12,9 @@ template '/etc/ssh/sshd_config' do
 end
 
 service 'ssh' do
-  provider Chef::Provider::Service::Upstart
-  action [ :enable ]
-  supports status: true, start: true, stop: true, restart: true
+  if node['platform'] == 'ubuntu' && node['platform_version'].to_f < 15.04
+    provider Chef::Provider::Service::Upstart
+  end
+  action [:enable, :start]
+  supports [:status, :start, :stop, :restart, :reload]
 end
