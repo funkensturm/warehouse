@@ -16,6 +16,9 @@ Array(@server_name.split(' ')).each do |domain|
   (0...36).map{ |i| i.to_s 36 }.each do |letter|
   config += %{ include "#{@site_path}/inside/#{letter}*.conf"; \n}
   end
+
+  # Loading domain specific inside server block
+  config += %{ include "#{@site_path}/inside/_#{domain}*.conf"; \n}
   %>
   server {
     listen 80;
