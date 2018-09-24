@@ -25,6 +25,13 @@ directory log_path do
   mode '0755'
 end
 
+log 'Ensuring Redis log file...'
+file logfile_path do
+  owner name
+  group name
+  mode '0644'
+end
+
 log 'Ensuring overcommit memory on Ubuntu...'
 execute "sysctl_overcommit" do
   command '/sbin/sysctl -w vm.overcommit_memory=1'
@@ -36,6 +43,18 @@ file '/etc/redis_master' do
   group name
   mode '0644'
   content "127.0.0.1:6379"
+end
+
+log 'Systemd service file for redis...'
+template ::File.join('lib', 'systemd', 'system', 'redis-server.service') do
+  source 'redis-server.service.erb'
+  owner 'root'
+  group 'root'
+  mode '0644'
+  variables({
+    log_path:  log_path,
+    data_path: data_path,
+  })
 end
 
 log 'Configuring Redis...'
