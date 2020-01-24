@@ -86,7 +86,7 @@ GEM
       wmi-lite (~> 1.0)
     plist (3.2.0)
     proxifier (1.0.3)
-    rack (1.6.4)
+    rack (1.6.12)
     rspec (3.5.0)
       rspec-core (~> 3.5.0)
       rspec-expectations (~> 3.5.0)
